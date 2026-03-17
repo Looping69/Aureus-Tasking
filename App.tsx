@@ -30,7 +30,7 @@ const App: React.FC = () => {
   const [isLiveMode, setIsLiveMode] = useState(true); // Default to live mode
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   
@@ -257,7 +257,7 @@ const App: React.FC = () => {
     (m.contentHtml || '').toLowerCase().includes(meetingSearchQuery.toLowerCase())
   );
 
-  if (authChecking) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950"><Loader2 className="w-8 h-8 animate-spin text-blue-600"/></div>;
+  if (authChecking) return <div className="min-h-screen flex items-center justify-center bg-black"><Loader2 className="w-8 h-8 animate-spin text-amber-500"/></div>;
 
   if (!currentUser) {
       return <Login onLogin={handleLogin} />;
@@ -265,15 +265,15 @@ const App: React.FC = () => {
 
   if (isLoading) {
       return (
-          <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
-              <Loader2 className="w-10 h-10 animate-spin mb-4 text-blue-600" />
+          <div className="min-h-screen bg-black flex flex-col items-center justify-center text-slate-400">
+              <Loader2 className="w-10 h-10 animate-spin mb-4 text-amber-500" />
               <p>Loading your workspace...</p>
           </div>
       );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-sans selection:bg-blue-500/30 transition-colors duration-300">
+    <div className="min-h-screen bg-black text-slate-100 font-sans selection:bg-amber-500/30 transition-colors duration-300">
       <CommandPalette 
           isOpen={isCommandPaletteOpen}
           onClose={() => setIsCommandPaletteOpen(false)}
@@ -313,43 +313,43 @@ const App: React.FC = () => {
       )}
 
       {/* Header - Changed from fixed to static/relative flow as requested "not sticky" */}
-      <header className="w-full z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+      <header className="w-full z-40 bg-black/90 dark:bg-black/90 backdrop-blur-md border-b border-amber-900/40 dark:border-amber-900/40 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-amber-600 p-2 rounded-lg shadow-sm">
-               <Zap className="w-5 h-5 text-white fill-white" />
+            <div className="bg-amber-600 p-2 rounded-lg shadow-lg shadow-amber-500/30">
+               <Zap className="w-5 h-5 text-black fill-black" />
             </div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-yellow-300">
               Aureus Tasking
             </h1>
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-2 text-xs text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded border border-slate-200 dark:border-slate-800">
+            <div className="hidden md:flex items-center gap-2 text-xs text-amber-600/80 bg-amber-950/30 px-2 py-1 rounded border border-amber-900/40">
                 <span className="font-bold">⌘K</span> to search
             </div>
 
-             <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-600 dark:text-slate-400">
+             <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950/30 border border-amber-900/40 text-xs font-mono text-amber-500">
                 <Users className="w-3 h-3" />
                 <span>{members.length}</span>
              </div>
 
              <button
                 onClick={() => setDarkMode(!darkMode)}
-                className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
+                className="p-2 rounded-full hover:bg-amber-950/30 text-amber-500 transition-colors"
              >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
              </button>
              
-             <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+             <div className="h-6 w-px bg-amber-900/40 mx-1"></div>
 
              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-slate-800 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold border border-amber-200 dark:border-slate-700">
+                <div className="w-8 h-8 rounded-full bg-amber-950/30 flex items-center justify-center text-amber-500 font-bold border border-amber-800/50">
                     <UserCircle className="w-5 h-5" />
                 </div>
                 <button
                     onClick={handleLogout}
-                    className="text-sm text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                    className="text-sm text-amber-700 hover:text-red-500 transition-colors"
                     title="Log Out"
                 >
                     <LogOut className="w-5 h-5" />
@@ -375,7 +375,7 @@ const App: React.FC = () => {
                 </div>
                 <button 
                     onClick={() => setIsOverlapOpen(true)}
-                    className="h-[120px] hidden sm:flex flex-col items-center justify-center px-4 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 border border-amber-200 dark:border-amber-800/50 rounded-xl transition-colors text-amber-700 dark:text-amber-500 shadow-sm"
+                    className="h-[120px] hidden sm:flex flex-col items-center justify-center px-4 bg-amber-950/20 hover:bg-amber-950/40 border border-amber-800/50 rounded-xl transition-colors text-amber-500 shadow-sm"
                 >
                     <Sparkles className="w-5 h-5 mb-1" />
                     <span className="text-[10px] font-bold uppercase">Best Time</span>
@@ -385,14 +385,14 @@ const App: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
             <div className="flex items-center gap-4">
-                 <div className="flex p-1 bg-slate-200 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-800 shadow-inner">
-                    <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+                 <div className="flex p-1 bg-zinc-900 rounded-lg border border-amber-900/40 shadow-inner">
+                    <button onClick={() => setViewMode('grid')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${viewMode === 'grid' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>
                         <LayoutGrid className="w-4 h-4" /> Team
                     </button>
-                    <button onClick={() => setViewMode('dashboard')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${viewMode === 'dashboard' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+                    <button onClick={() => setViewMode('dashboard')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${viewMode === 'dashboard' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>
                         <BarChart3 className="w-4 h-4" /> Stats
                     </button>
-                    <button onClick={() => setViewMode('meetings')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${viewMode === 'meetings' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+                    <button onClick={() => setViewMode('meetings')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-2 ${viewMode === 'meetings' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>
                         <FileText className="w-4 h-4" /> Meetings
                     </button>
                 </div>
@@ -400,15 +400,15 @@ const App: React.FC = () => {
             
             {viewMode === 'grid' && (
                 <div className="flex items-center gap-2">
-                    <button id="add-member-trigger" onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium shadow-lg shadow-amber-500/20 transition-colors">
+                    <button id="add-member-trigger" onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 bg-amber-600 hover:bg-amber-500 text-black px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg shadow-amber-500/20 transition-colors">
                         <Plus className="w-4 h-4" /> Add Member
                     </button>
-                     <button onClick={() => setGroupByRole(!groupByRole)} className={`p-2 rounded-lg border transition-colors ${groupByRole ? 'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400' : 'bg-white border-slate-200 text-slate-500 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-400'}`}>
+                     <button onClick={() => setGroupByRole(!groupByRole)} className={`p-2 rounded-lg border transition-colors ${groupByRole ? 'bg-amber-900/30 border-amber-700 text-amber-500' : 'bg-zinc-900 border-amber-900/40 text-slate-500 hover:text-amber-400'}`}>
                          <Layers className="w-4 h-4" />
                      </button>
-                    <div className="flex p-1 bg-slate-100 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <button onClick={() => setFilter('all')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'all' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>All</button>
-                        <button onClick={() => setFilter('working')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-1 ${filter === 'working' ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>Working</button>
+                    <div className="flex p-1 bg-zinc-900 rounded-lg border border-amber-900/40 shadow-sm">
+                        <button onClick={() => setFilter('all')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'all' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>All</button>
+                        <button onClick={() => setFilter('working')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-1 ${filter === 'working' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>Working</button>
                     </div>
                 </div>
             )}
@@ -473,29 +473,29 @@ const App: React.FC = () => {
             ) : (
                 <div className="space-y-6 animate-in fade-in">
                     <div className="relative max-w-md mx-auto md:mx-0">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input type="text" value={meetingSearchQuery} onChange={(e) => setMeetingSearchQuery(e.target.value)} placeholder="Search meetings..." className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-600/60" />
+                        <input type="text" value={meetingSearchQuery} onChange={(e) => setMeetingSearchQuery(e.target.value)} placeholder="Search meetings..." className="w-full pl-10 pr-4 py-2 bg-zinc-900 border border-amber-900/40 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <button onClick={() => setCurrentMeeting({ id: '', title: '', date: '', contentHtml: '' })} className="flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-slate-900/50 transition-all group h-full min-h-[200px]">
-                            <div className="bg-amber-100 dark:bg-slate-800 p-4 rounded-full text-amber-600 dark:text-amber-400 mb-4 group-hover:scale-110 transition-transform"><Plus className="w-6 h-6" /></div>
-                            <h3 className="font-bold text-slate-700 dark:text-slate-200">New Meeting Note</h3>
+                        <button onClick={() => setCurrentMeeting({ id: '', title: '', date: '', contentHtml: '' })} className="flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed border-amber-900/40 hover:border-amber-500 hover:bg-amber-950/20 transition-all group h-full min-h-[200px]">
+                            <div className="bg-amber-950/30 p-4 rounded-full text-amber-500 mb-4 group-hover:scale-110 transition-transform"><Plus className="w-6 h-6" /></div>
+                            <h3 className="font-bold text-slate-300">New Meeting Note</h3>
                         </button>
                         {filteredMeetings.map(meeting => (
-                            <div key={meeting.id} onClick={() => setCurrentMeeting(meeting)} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 hover:shadow-lg transition-all cursor-pointer group relative">
+                            <div key={meeting.id} onClick={() => setCurrentMeeting(meeting)} className="bg-zinc-900 rounded-xl border border-amber-900/40 p-6 hover:shadow-lg hover:shadow-amber-900/20 hover:border-amber-700/50 transition-all cursor-pointer group relative">
                                 <button 
                                     onClick={(e) => handleDeleteMeeting(e, meeting.id)}
-                                    className="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+                                    className="absolute top-4 right-4 p-2 text-slate-500 hover:text-red-500 hover:bg-red-950/20 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10"
                                     title="Delete Meeting"
                                 >
                                     <Trash2 className="w-4 h-4" />
                                 </button>
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400"><FileText className="w-6 h-6" /></div>
-                                    <span className="text-xs text-slate-400 font-mono">{new Date(meeting.date).toLocaleDateString()}</span>
+                                    <div className="p-2 bg-amber-950/30 rounded-lg text-amber-500"><FileText className="w-6 h-6" /></div>
+                                    <span className="text-xs text-slate-500 font-mono">{new Date(meeting.date).toLocaleDateString()}</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-amber-600">{meeting.title}</h3>
-                                <div className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 opacity-70">{meeting.contentHtml.replace(/<[^>]+>/g, '')}</div>
+                                <h3 className="text-lg font-bold text-slate-100 mb-2 group-hover:text-amber-400">{meeting.title}</h3>
+                                <div className="text-sm text-slate-500 line-clamp-3 opacity-70">{meeting.contentHtml.replace(/<[^>]+>/g, '')}</div>
                             </div>
                         ))}
                     </div>
@@ -505,7 +505,7 @@ const App: React.FC = () => {
             <div className={groupByRole ? "space-y-8" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"}>
                 {groupByRole ? Object.entries(groupedMembers).map(([role, groupMembers]) => (
                     <div key={role} className="animate-in fade-in">
-                        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2 pl-1">
+                        <h3 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2 pl-1">
                             <span className="w-2 h-2 rounded-full bg-amber-500"></span> {role}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">

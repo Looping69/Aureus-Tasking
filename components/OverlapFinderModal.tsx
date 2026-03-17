@@ -65,20 +65,20 @@ export const OverlapFinderModal: React.FC<OverlapFinderModalProps> = ({ isOpen, 
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/70 backdrop-blur-sm">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-zinc-900 border border-amber-900/40 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div className="p-5 sm:p-6 border-b border-amber-900/30 flex justify-between items-center">
+                    <h2 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
                         <Star className="w-5 h-5 text-amber-500" />
                         Best Meeting Times
                     </h2>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                    <button onClick={onClose} className="text-slate-500 hover:text-amber-400 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
                 
-                <div className="p-6 space-y-4">
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                <div className="p-5 sm:p-6 space-y-4">
+                    <p className="text-sm text-slate-500">
                         Based on everyone's working hours, here are the best times to meet (UTC).
                     </p>
 
@@ -87,23 +87,23 @@ export const OverlapFinderModal: React.FC<OverlapFinderModalProps> = ({ isOpen, 
                             <button 
                                 key={slot.hour} 
                                 onClick={() => handleApply(slot.hour)}
-                                className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 transition-all group"
+                                className="w-full flex items-center justify-between p-4 rounded-xl border border-amber-900/30 bg-zinc-800/50 hover:bg-zinc-800 hover:border-amber-700/50 transition-all group"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${idx === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-500' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}`}>
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${idx === 0 ? 'bg-amber-500 text-black' : 'bg-zinc-700 text-slate-400'}`}>
                                         {idx + 1}
                                     </div>
                                     <div className="text-left">
-                                        <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <div className="font-bold text-slate-200 flex items-center gap-2 flex-wrap">
                                             {slot.hour}:00 UTC
-                                            {slot.isUnhealthy && <span className="text-[10px] px-1.5 py-0.5 bg-red-100 text-red-600 rounded-full">Late for some</span>}
+                                            {slot.isUnhealthy && <span className="text-[10px] px-1.5 py-0.5 bg-red-950/50 text-red-400 rounded-full border border-red-900/40">Late for some</span>}
                                         </div>
                                         <div className="text-xs text-slate-500">
                                             {slot.count} / {members.length} members available
                                         </div>
                                     </div>
                                 </div>
-                                <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+                                <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-amber-500 transition-colors shrink-0" />
                             </button>
                         ))}
                     </div>

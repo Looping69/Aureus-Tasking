@@ -54,36 +54,36 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, m
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/70 backdrop-blur-sm">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-zinc-900 border border-amber-900/40 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div className="p-5 sm:p-6 border-b border-amber-900/30 flex justify-between items-center">
+                    <h2 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
                         Data Settings
                     </h2>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                    <button onClick={onClose} className="text-slate-500 hover:text-amber-400 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
                 
-                <div className="p-6 space-y-6">
+                <div className="p-5 sm:p-6 space-y-5 sm:space-y-6">
                     <div className="space-y-3">
-                        <h3 className="text-sm font-medium text-slate-900 dark:text-white">Export Data</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Save your team configuration, tasks, and meeting notes to a JSON file.</p>
+                        <h3 className="text-sm font-medium text-slate-200">Export Data</h3>
+                        <p className="text-xs text-slate-500">Save your team configuration, tasks, and meeting notes to a JSON file.</p>
                         <button 
                             onClick={handleExport}
-                            className="w-full flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2.5 rounded-lg transition-colors text-sm font-medium border border-slate-200 dark:border-slate-700"
+                            className="w-full flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-slate-300 py-2.5 rounded-lg transition-colors text-sm font-medium border border-zinc-700"
                         >
                             <Download className="w-4 h-4" />
                             Export Backup
                         </button>
                     </div>
 
-                    <div className="w-full h-px bg-slate-100 dark:bg-slate-800"></div>
+                    <div className="w-full h-px bg-amber-900/30"></div>
 
                     <div className="space-y-3">
-                        <h3 className="text-sm font-medium text-slate-900 dark:text-white">Import Data</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Restore from a previously exported backup file. This will overwrite current data.</p>
-                        <label className="w-full flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 py-2.5 rounded-lg transition-colors text-sm font-medium border border-dashed border-blue-200 dark:border-blue-800 cursor-pointer">
+                        <h3 className="text-sm font-medium text-slate-200">Import Data</h3>
+                        <p className="text-xs text-slate-500">Restore from a previously exported backup file. This will overwrite current data.</p>
+                        <label className="w-full flex items-center justify-center gap-2 bg-amber-950/20 hover:bg-amber-950/40 text-amber-500 py-2.5 rounded-lg transition-colors text-sm font-medium border border-dashed border-amber-800/50 cursor-pointer">
                             <Upload className="w-4 h-4" />
                             Select Backup File
                             <input type="file" accept=".json" onChange={handleImport} className="hidden" />

@@ -183,7 +183,7 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
                  // Create the mention pill
                  const span = document.createElement('span');
                  span.contentEditable = 'false';
-                 span.className = 'inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 font-medium text-sm mx-1 select-none align-middle border border-blue-200 dark:border-blue-800';
+                 span.className = 'inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-950/40 text-amber-400 font-medium text-sm mx-1 select-none align-middle border border-amber-800/40';
                  span.dataset.memberId = member.id;
                  span.innerText = `@${member.name}`;
                  
@@ -325,13 +325,13 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
             
             // Create HTML block for summary
             const summaryHtml = `
-                <div class="my-6 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 rounded-lg">
-                    <h3 class="text-purple-700 dark:text-purple-300 font-bold text-sm uppercase mb-2 flex items-center gap-2">
+                <div class="my-6 p-4 bg-amber-950/20 border border-amber-800/40 rounded-lg">
+                    <h3 class="text-amber-400 font-bold text-sm uppercase mb-2 flex items-center gap-2">
                         ✨ AI Summary
                     </h3>
-                    <p class="text-slate-700 dark:text-slate-300 text-sm mb-3 italic">${result.summary}</p>
-                    <h4 class="text-xs font-bold text-slate-500 uppercase mb-1">Suggested Action Items:</h4>
-                    <ul class="list-disc pl-5 text-sm text-slate-700 dark:text-slate-300">
+                    <p class="text-slate-300 text-sm mb-3 italic">${result.summary}</p>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase mb-1">Suggested Action Items:</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-300">
                         ${result.actionItems.map(item => `<li>${item}</li>`).join('')}
                     </ul>
                 </div>
@@ -362,15 +362,15 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
     };
 
     return (
-        <div className="h-[calc(100vh-120px)] flex flex-col bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="h-[calc(100vh-120px)] flex flex-col bg-zinc-900 rounded-xl border border-amber-900/40 shadow-sm overflow-hidden">
             
             {/* Header / Toolbar */}
-            <div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3">
-                <div className="flex justify-between items-center mb-4 gap-4">
-                    <div className="flex items-center gap-2 flex-1">
+            <div className="border-b border-amber-900/30 bg-black/30 p-2 sm:p-3">
+                <div className="flex flex-wrap justify-between items-center mb-2 sm:mb-4 gap-2">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
                          <button 
                             onClick={onBack}
-                            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors"
+                            className="p-2 rounded-full hover:bg-zinc-800 text-slate-500 hover:text-amber-400 transition-colors shrink-0"
                             title="Back to Meetings"
                          >
                              <ChevronLeft className="w-5 h-5" />
@@ -379,26 +379,24 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
                             type="text" 
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="flex-1 bg-transparent text-xl font-bold text-slate-900 dark:text-white outline-none placeholder-slate-400 min-w-0"
+                            className="flex-1 bg-transparent text-base sm:text-xl font-bold text-slate-100 outline-none placeholder-slate-500 min-w-0"
                             placeholder="Meeting Title..."
                         />
                     </div>
                     
-                    <div className="flex items-center gap-2 shrink-0">
-                        <div className="relative">
-                             <input 
-                                type="date" 
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm"
-                             />
-                        </div>
+                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 flex-wrap justify-end">
+                        <input 
+                            type="date" 
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            className="bg-zinc-800 border border-zinc-700 text-slate-300 text-xs sm:text-sm rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                        />
 
                         {isAIAvailable() && (
                         <button 
                             onClick={handleAISummarize}
                             disabled={isSummarizing}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50 transition-all"
+                            className="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium bg-amber-950/30 text-amber-400 hover:bg-amber-950/50 transition-all border border-amber-800/40"
                             title="Summarize & Extract Tasks using AI"
                         >
                             {isSummarizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
@@ -409,33 +407,34 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
                         <button 
                             onClick={extractTasks}
                             disabled={isSyncing || syncSuccess}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
+                            className={`flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all
                                 ${syncSuccess 
-                                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' 
-                                    : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50'
+                                    ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/40' 
+                                    : 'bg-zinc-800 text-slate-300 hover:bg-zinc-700 border border-zinc-700'
                                 }`}
                         >
                             {isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : syncSuccess ? <CheckCircle2 className="w-4 h-4" /> : <Wand2 className="w-4 h-4" />}
-                            {syncSuccess ? 'Tasks Synced!' : 'Sync Tasks'}
+                            <span className="hidden xs:inline">{syncSuccess ? 'Synced!' : 'Sync Tasks'}</span>
                         </button>
                         <button 
                             onClick={handleSave}
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 text-sm font-medium shadow-md shadow-blue-500/20"
+                            title="Save meeting"
+                            className="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-amber-600 text-black rounded-lg hover:bg-amber-500 text-xs sm:text-sm font-bold shadow-md shadow-amber-500/20"
                         >
-                            <Save className="w-4 h-4" /> Save
+                            <Save className="w-4 h-4" /> <span className="hidden sm:inline">Save</span>
                         </button>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-1 p-1 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800">
+                <div className="flex overflow-x-auto gap-0.5 p-1 bg-zinc-900/50 rounded-lg border border-zinc-800 scrollbar-hide">
                     <ToolbarBtn icon={<Bold className="w-4 h-4"/>} onClick={() => execCmd('bold')} tooltip="Bold" />
                     <ToolbarBtn icon={<Italic className="w-4 h-4"/>} onClick={() => execCmd('italic')} tooltip="Italic" />
                     <ToolbarBtn icon={<Underline className="w-4 h-4"/>} onClick={() => execCmd('underline')} tooltip="Underline" />
-                    <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 self-center"></div>
+                    <div className="w-px h-6 bg-zinc-700 mx-1 self-center shrink-0"></div>
                     <ToolbarBtn icon={<Heading1 className="w-4 h-4"/>} onClick={() => execCmd('formatBlock', 'H1')} tooltip="Heading 1" />
                     <ToolbarBtn icon={<Heading2 className="w-4 h-4"/>} onClick={() => execCmd('formatBlock', 'H2')} tooltip="Heading 2" />
                     <ToolbarBtn icon={<Type className="w-4 h-4"/>} onClick={() => execCmd('formatBlock', 'P')} tooltip="Paragraph" />
-                    <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 self-center"></div>
+                    <div className="w-px h-6 bg-zinc-700 mx-1 self-center shrink-0"></div>
                     <ToolbarBtn icon={<List className="w-4 h-4"/>} onClick={() => execCmd('insertUnorderedList')} tooltip="Bullet List" />
                     <ToolbarBtn icon={<ListOrdered className="w-4 h-4"/>} onClick={() => execCmd('insertOrderedList')} tooltip="Numbered List" />
                     <ToolbarBtn icon={<Quote className="w-4 h-4"/>} onClick={() => execCmd('formatBlock', 'BLOCKQUOTE')} tooltip="Quote" />
@@ -443,23 +442,23 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
             </div>
 
             {/* Editor Area */}
-            <div className="flex-1 overflow-y-auto bg-slate-100 dark:bg-slate-950 p-8 cursor-text" onClick={() => editorRef.current?.focus()}>
+            <div className="flex-1 overflow-y-auto bg-black/30 p-4 sm:p-8 cursor-text" onClick={() => editorRef.current?.focus()}>
                 <div 
                     ref={editorRef}
                     contentEditable
                     onKeyDown={handleKeyDown}
                     onBlur={saveSelection}
-                    className="editor-content max-w-3xl mx-auto min-h-[800px] bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 rounded-lg p-12 outline-none focus:ring-2 focus:ring-blue-500/20 transition-shadow text-slate-900 dark:text-slate-200"
+                    className="editor-content max-w-3xl mx-auto min-h-[600px] sm:min-h-[800px] bg-zinc-900 shadow-sm border border-amber-900/30 rounded-lg p-6 sm:p-12 outline-none focus:ring-2 focus:ring-amber-500/20 transition-shadow text-slate-200"
                 />
             </div>
 
             {/* Mention Popup */}
             {showMentionList && (
                 <div 
-                    className="fixed z-50 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl w-64 overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                    className="fixed z-50 bg-zinc-900 border border-amber-900/40 rounded-lg shadow-xl w-64 overflow-hidden animate-in fade-in zoom-in-95 duration-100"
                     style={{ top: mentionPosition.top, left: mentionPosition.left }}
                 >
-                    <div className="px-3 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <div className="px-3 py-2 bg-black/30 border-b border-amber-900/30 text-xs font-semibold text-amber-600 uppercase tracking-wider">
                         Mention Member
                     </div>
                     <div ref={listRef} className="max-h-48 overflow-y-auto scroll-smooth">
@@ -471,12 +470,12 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
                                     onMouseEnter={() => setSelectedIndex(index)}
                                     className={`w-full px-4 py-2 flex items-center gap-3 transition-colors text-left
                                         ${index === selectedIndex 
-                                            ? 'bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 pl-3' 
-                                            : 'hover:bg-slate-50 dark:hover:bg-slate-800 border-l-4 border-transparent'}`}
+                                            ? 'bg-amber-950/30 border-l-4 border-amber-500 pl-3' 
+                                            : 'hover:bg-zinc-800 border-l-4 border-transparent'}`}
                                 >
                                     <img src={member.avatarUrl} alt="" className="w-6 h-6 rounded-full object-cover" />
                                     <div>
-                                        <div className={`text-sm font-medium ${index === selectedIndex ? 'text-blue-700 dark:text-blue-300' : 'text-slate-900 dark:text-white'}`}>{member.name}</div>
+                                        <div className={`text-sm font-medium ${index === selectedIndex ? 'text-amber-400' : 'text-slate-200'}`}>{member.name}</div>
                                         <div className="text-xs text-slate-500">{member.role}</div>
                                     </div>
                                 </button>
@@ -495,7 +494,7 @@ const ToolbarBtn: React.FC<{ icon: React.ReactNode, onClick: () => void, tooltip
     <button 
         onMouseDown={(e) => { e.preventDefault(); onClick(); }}
         title={tooltip}
-        className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors"
+        className="p-2 rounded hover:bg-zinc-800 text-slate-400 hover:text-amber-400 transition-colors"
     >
         {icon}
     </button>

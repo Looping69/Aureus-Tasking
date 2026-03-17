@@ -107,46 +107,46 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/70 backdrop-blur-sm">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 transition-colors">
-                <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                        <UserPlus className="w-5 h-5 text-blue-500" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-zinc-900 border border-amber-900/40 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                <div className="p-5 sm:p-6 border-b border-amber-900/30 flex justify-between items-center">
+                    <h2 className="text-lg sm:text-xl font-semibold text-white flex items-center gap-2">
+                        <UserPlus className="w-5 h-5 text-amber-500" />
                         Add Team Member
                     </h2>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                    <button onClick={onClose} className="text-slate-500 hover:text-amber-400 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Full Name</label>
+                        <label className="block text-sm font-medium text-slate-400 mb-1">Full Name</label>
                         <input 
                             type="text" 
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-colors"
                             placeholder="e.g. Jane Doe"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Role</label>
+                        <label className="block text-sm font-medium text-slate-400 mb-1">Role</label>
                         <input 
                             type="text" 
                             required
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-colors"
                             placeholder="e.g. Senior Engineer"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 flex justify-between">
+                        <label className="block text-sm font-medium text-slate-400 mb-1 flex justify-between">
                             Location
                             {aiAvailable && (
-                                <span className="text-xs text-blue-500 dark:text-blue-400 flex items-center gap-1"><Sparkles className="w-3 h-3"/> AI Auto-detect</span>
+                                <span className="text-xs text-amber-500 flex items-center gap-1"><Sparkles className="w-3 h-3"/> AI Auto-detect</span>
                             )}
                         </label>
                         <input 
@@ -180,7 +180,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
+                            <label className="block text-sm font-medium text-slate-400 mb-1 flex items-center gap-1">
                                 <Clock className="w-3 h-3"/> Start Hour (0-23)
                             </label>
                             <input 
@@ -190,7 +190,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                                 required
                                 value={workStart}
                                 onChange={(e) => setWorkStart(Math.min(23, Math.max(0, parseInt(e.target.value) || 0)))}
-                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors text-center font-mono"
+                                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-colors text-center font-mono"
                             />
                         </div>
                         <div>
@@ -210,7 +210,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                     </div>
 
                     {error && (
-                        <div className="p-3 bg-red-50 border border-red-200 dark:bg-red-500/10 dark:border-red-500/20 rounded-lg text-red-600 dark:text-red-400 text-sm">
+                        <div className="p-3 bg-red-950/20 border border-red-900/40 rounded-lg text-red-400 text-sm">
                             {error}
                         </div>
                     )}
@@ -219,7 +219,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                         <button 
                             type="submit" 
                             disabled={isLoading}
-                            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/20"
+                            className="w-full bg-amber-600 hover:bg-amber-500 text-black font-bold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-500/20"
                         >
                             {isLoading ? (
                                 <>
