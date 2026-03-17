@@ -61,46 +61,46 @@ export const Dashboard: React.FC<DashboardProps> = ({ members }) => {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Aureus Tasking</h2>
+            <h2 className="text-2xl font-bold text-amber-400">Aureus Tasking</h2>
             
             {/* Key Metrics Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <div className="bg-zinc-900 p-6 rounded-2xl border border-amber-900/40 shadow-sm flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-amber-950/40 text-amber-500">
                         <ListTodo className="w-8 h-8" />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Tasks</p>
-                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{totalTasks}</h3>
+                        <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Tasks</p>
+                        <h3 className="text-3xl font-bold text-white">{totalTasks}</h3>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                <div className="bg-zinc-900 p-6 rounded-2xl border border-amber-900/40 shadow-sm flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-emerald-900/30 text-emerald-400">
                         <CheckCircle2 className="w-8 h-8" />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Completed</p>
-                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{completedTasks}</h3>
+                        <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Completed</p>
+                        <h3 className="text-3xl font-bold text-white">{completedTasks}</h3>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                <div className="bg-zinc-900 p-6 rounded-2xl border border-amber-900/40 shadow-sm flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-amber-950/40 text-amber-500">
                         <TrendingUp className="w-8 h-8" />
                     </div>
                     <div>
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Completion Rate</p>
-                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{completionRate}%</h3>
+                        <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">Completion Rate</p>
+                        <h3 className="text-3xl font-bold text-white">{completionRate}%</h3>
                     </div>
                 </div>
             </div>
 
             {/* Heatmap Section */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+            <div className="bg-zinc-900 rounded-2xl border border-amber-900/40 shadow-sm p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                        <Activity className="w-5 h-5 text-purple-500" />
+                    <h3 className="font-bold text-lg text-slate-200 flex items-center gap-2">
+                        <Activity className="w-5 h-5 text-amber-500" />
                         24h Team Availability Heatmap (UTC)
                     </h3>
                 </div>
