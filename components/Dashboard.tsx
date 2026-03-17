@@ -104,29 +104,29 @@ export const Dashboard: React.FC<DashboardProps> = ({ members }) => {
                         24h Team Availability Heatmap (UTC)
                     </h3>
                 </div>
-                <div className="h-40 flex items-end gap-1 sm:gap-2">
+                <div className="h-32 sm:h-40 flex items-end gap-0.5 sm:gap-1">
                     {heatmapData.map((d) => {
                         const heightPercent = (d.count / maxAvailability) * 100;
                         const isHigh = d.count === maxAvailability;
                         return (
                             <div key={d.hour} className="flex-1 flex flex-col items-center gap-2 group relative">
                                 <div 
-                                    className={`w-full rounded-t-md transition-all duration-500 ${isHigh ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-emerald-200 dark:bg-emerald-900/40'} hover:bg-emerald-400 dark:hover:bg-emerald-500`}
+                                    className={`w-full rounded-t-sm transition-all duration-500 ${isHigh ? 'bg-amber-500' : 'bg-amber-900/40'} hover:bg-amber-400`}
                                     style={{ height: `${Math.max(heightPercent, 5)}%` }}
                                 >
                                     {/* Tooltip */}
-                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-zinc-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-10">
                                         {d.count} Available @ {d.hour}:00 UTC
                                     </div>
                                 </div>
-                                <span className="text-[10px] text-slate-400 font-mono rotate-0 hidden sm:block">
+                                <span className="text-[9px] sm:text-[10px] text-slate-500 font-mono hidden sm:block">
                                     {d.hour}
                                 </span>
                             </div>
                         );
                     })}
                 </div>
-                <div className="flex justify-between text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-2 mt-1">
+                <div className="flex justify-between text-xs text-slate-500 border-t border-amber-900/30 pt-2 mt-1">
                     <span>00:00 UTC</span>
                     <span>12:00 UTC</span>
                     <span>23:00 UTC</span>
@@ -136,17 +136,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ members }) => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 {/* Task Distribution Column */}
-                <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                        <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                            <Target className="w-5 h-5 text-blue-500" />
+                <div className="lg:col-span-2 bg-zinc-900 rounded-2xl border border-amber-900/40 shadow-sm overflow-hidden">
+                    <div className="p-4 sm:p-6 border-b border-amber-900/30 flex justify-between items-center">
+                        <h3 className="font-bold text-base sm:text-lg text-slate-200 flex items-center gap-2">
+                            <Target className="w-5 h-5 text-amber-500" />
                             Team Workload
                         </h3>
-                        <span className="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
+                        <span className="text-xs text-amber-600 bg-amber-950/40 px-2 py-1 rounded-full border border-amber-900/40">
                             {pendingTasks} Pending
                         </span>
                     </div>
-                    <div className="p-6 space-y-6">
+                    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                         {members.map(member => {
                             const mTasks = member.tasks || [];
                             const mTotal = mTasks.length;
@@ -156,22 +156,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ members }) => {
                             return (
                                 <div key={member.id}>
                                     <div className="flex justify-between items-end mb-2">
-                                        <div className="flex items-center gap-3">
-                                            <img src={member.avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
-                                            <div>
-                                                <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">{member.name}</h4>
-                                                <p className="text-[10px] text-slate-500">{member.role}</p>
+                                        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                                            <img src={member.avatarUrl} alt="" className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-amber-900/40 shrink-0" />
+                                            <div className="min-w-0">
+                                                <h4 className="text-sm font-semibold text-slate-300 truncate">{member.name}</h4>
+                                                <p className="text-[10px] text-slate-500 truncate">{member.role}</p>
                                             </div>
                                         </div>
-                                        <div className="text-right">
-                                            <span className="text-sm font-bold text-slate-900 dark:text-white">{mDone}</span>
-                                            <span className="text-xs text-slate-400 mx-1">/</span>
-                                            <span className="text-xs text-slate-500">{mTotal} tasks</span>
+                                        <div className="text-right shrink-0 ml-2">
+                                            <span className="text-sm font-bold text-amber-400">{mDone}</span>
+                                            <span className="text-xs text-slate-500 mx-1">/</span>
+                                            <span className="text-xs text-slate-500">{mTotal}</span>
                                         </div>
                                     </div>
-                                    <div className="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                                    <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden">
                                         <div 
-                                            className="h-full bg-emerald-500 transition-all duration-700" 
+                                            className="h-full bg-amber-500 transition-all duration-700 rounded-full" 
                                             style={{ width: `${percent}%` }} 
                                             title={`${mDone} Completed`}
                                         />
@@ -186,9 +186,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ members }) => {
                 </div>
 
                 {/* Leaderboard Column */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-br from-amber-50 to-white dark:from-amber-900/10 dark:to-slate-900">
-                        <h3 className="font-bold text-lg text-amber-700 dark:text-amber-500 flex items-center gap-2">
+                <div className="bg-zinc-900 rounded-2xl border border-amber-900/40 shadow-sm overflow-hidden">
+                    <div className="p-4 sm:p-6 border-b border-amber-900/30 bg-gradient-to-br from-amber-950/40 to-zinc-900">
+                        <h3 className="font-bold text-base sm:text-lg text-amber-400 flex items-center gap-2">
                             <Trophy className="w-5 h-5" />
                             Top Performers
                         </h3>
@@ -198,18 +198,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ members }) => {
                         {sortedByCompletion.map((member, index) => {
                              const mDone = (member.tasks || []).filter(t => t.completed).length;
                              return (
-                                <div key={member.id} className="flex items-center gap-4 p-4 border-b border-slate-50 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                    <div className="flex items-center justify-center w-8 h-8 bg-slate-50 dark:bg-slate-800 rounded-full shrink-0">
+                                <div key={member.id} className="flex items-center gap-3 p-3 sm:p-4 border-b border-amber-900/20 last:border-0 hover:bg-zinc-800/50 transition-colors">
+                                    <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 bg-zinc-800 rounded-full shrink-0">
                                         {getMedal(index)}
                                     </div>
-                                    <img src={member.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                                    <img src={member.avatarUrl} alt="" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border border-amber-900/40 shrink-0" />
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{member.name}</h4>
+                                        <h4 className="text-sm font-semibold text-slate-200 truncate">{member.name}</h4>
                                         <p className="text-xs text-slate-500 truncate">{member.role}</p>
                                     </div>
-                                    <div className="text-right">
-                                        <div className="text-lg font-bold text-slate-700 dark:text-slate-300">{mDone}</div>
-                                        <div className="text-[10px] text-slate-400 uppercase">Done</div>
+                                    <div className="text-right shrink-0">
+                                        <div className="text-lg font-bold text-amber-400">{mDone}</div>
+                                        <div className="text-[10px] text-slate-500 uppercase">Done</div>
                                     </div>
                                 </div>
                              );

@@ -61,13 +61,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black/40 dark:bg-black/80 backdrop-blur-sm flex items-start justify-center pt-[20vh]" onClick={onClose}>
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[15vh] sm:pt-[20vh] px-4" onClick={onClose}>
             <div 
-                className="w-full max-w-xl bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150"
+                className="w-full max-w-xl bg-zinc-900 rounded-xl shadow-2xl border border-amber-900/40 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150"
                 onClick={e => e.stopPropagation()}
             >
-                <div className="flex items-center gap-3 px-4 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <Search className="w-5 h-5 text-slate-400" />
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-amber-900/30">
+                    <Search className="w-5 h-5 text-amber-600/60 shrink-0" />
                     <input 
                         ref={inputRef}
                         type="text" 
@@ -75,10 +75,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                         onChange={e => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Type a command or search..."
-                        className="flex-1 bg-transparent text-lg outline-none text-slate-900 dark:text-white placeholder-slate-400"
+                        className="flex-1 bg-transparent text-base sm:text-lg outline-none text-slate-200 placeholder-slate-500"
                     />
-                    <div className="flex gap-1">
-                        <kbd className="px-2 py-1 text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 rounded border border-slate-200 dark:border-slate-700">ESC</kbd>
+                    <div className="flex gap-1 shrink-0">
+                        <kbd className="px-2 py-1 text-xs font-semibold text-amber-600 bg-zinc-800 rounded border border-zinc-700">ESC</kbd>
                     </div>
                 </div>
                 
@@ -87,34 +87,34 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                         <div className="p-4 text-center text-slate-500 text-sm">No results found.</div>
                     ) : (
                         <div className="space-y-1">
-                            {memberItems.length > 0 && <div className="px-2 py-1 text-xs font-semibold text-slate-500 uppercase">Members</div>}
+                            {memberItems.length > 0 && <div className="px-2 py-1 text-xs font-semibold text-slate-500 uppercase tracking-wider">Members</div>}
                             {memberItems.map((item, idx) => (
                                 <button
                                     key={item.id}
                                     onClick={() => { item.action(); onClose(); }}
-                                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${idx === selectedIndex ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'}`}
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${idx === selectedIndex ? 'bg-amber-600 text-black' : 'hover:bg-zinc-800 text-slate-300'}`}
                                     onMouseEnter={() => setSelectedIndex(idx)}
                                 >
                                     {item.icon}
-                                    <div className="flex-1">
-                                        <div className="text-sm font-medium">{item.label}</div>
-                                        <div className={`text-xs ${idx === selectedIndex ? 'text-blue-200' : 'text-slate-400'}`}>{item.subLabel}</div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-medium truncate">{item.label}</div>
+                                        <div className={`text-xs truncate ${idx === selectedIndex ? 'text-black/70' : 'text-slate-500'}`}>{item.subLabel}</div>
                                     </div>
-                                    {idx === selectedIndex && <span className="text-xs opacity-70">Jump to</span>}
+                                    {idx === selectedIndex && <span className="text-xs opacity-70 shrink-0">Jump to</span>}
                                 </button>
                             ))}
                             
-                            {commandItems.length > 0 && <div className="px-2 py-1 mt-2 text-xs font-semibold text-slate-500 uppercase">Commands</div>}
+                            {commandItems.length > 0 && <div className="px-2 py-1 mt-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Commands</div>}
                             {commandItems.map((item, idx) => {
                                 const realIdx = idx + memberItems.length;
                                 return (
                                     <button
                                         key={item.id}
                                         onClick={() => { item.action(); onClose(); }}
-                                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${realIdx === selectedIndex ? 'bg-blue-600 text-white' : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'}`}
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${realIdx === selectedIndex ? 'bg-amber-600 text-black' : 'hover:bg-zinc-800 text-slate-300'}`}
                                         onMouseEnter={() => setSelectedIndex(realIdx)}
                                     >
-                                        <div className={`w-5 h-5 flex items-center justify-center rounded ${realIdx === selectedIndex ? 'text-white' : 'text-slate-500'}`}>{item.icon}</div>
+                                        <div className={`w-5 h-5 flex items-center justify-center rounded shrink-0 ${realIdx === selectedIndex ? 'text-black' : 'text-amber-600'}`}>{item.icon}</div>
                                         <div className="flex-1 text-sm font-medium">{item.label}</div>
                                     </button>
                                 );
@@ -123,11 +123,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                     )}
                 </div>
                 
-                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-500">
+                <div className="px-4 py-2 bg-black/40 border-t border-amber-900/30 flex justify-between items-center text-xs text-slate-500">
                     <div>
-                        <span className="font-semibold">ProTip:</span> Use arrow keys to navigate
+                        <span className="font-semibold text-amber-600/70">ProTip:</span> Use arrow keys to navigate
                     </div>
-                    <div>Zappy Meet</div>
+                    <div className="text-amber-800">Aureus Tasking</div>
                 </div>
             </div>
         </div>

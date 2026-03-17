@@ -67,7 +67,7 @@ export const TimelineSlider: React.FC<TimelineSliderProps> = ({ currentDate, onC
             .attr("x2", d => xScale(d))
             .attr("y1", 35)
             .attr("y2", (d) => (d.getHours() % 3 === 0) ? 50 : 42)
-            .attr("class", (d) => (d.getHours() % 3 === 0) ? "stroke-slate-300 dark:stroke-slate-600" : "stroke-slate-200 dark:stroke-slate-800")
+            .attr("class", (d) => (d.getHours() % 3 === 0) ? "stroke-amber-900/60" : "stroke-zinc-800")
             .attr("stroke-width", 1);
 
 
@@ -87,7 +87,7 @@ export const TimelineSlider: React.FC<TimelineSliderProps> = ({ currentDate, onC
                 .attr("x2", innerWidth)
                 .attr("y1", y)
                 .attr("y2", y)
-                .attr("class", "stroke-slate-100 dark:stroke-slate-800/50")
+                .attr("class", "stroke-zinc-800")
                 .attr("stroke-width", LINE_HEIGHT)
                 .attr("stroke-linecap", "round");
 
@@ -127,7 +127,7 @@ export const TimelineSlider: React.FC<TimelineSliderProps> = ({ currentDate, onC
                         .attr("x2", x2)
                         .attr("y1", y)
                         .attr("y2", y)
-                        .attr("class", "stroke-blue-400 dark:stroke-blue-500/70")
+                .attr("class", "stroke-amber-400/70")
                         .attr("stroke-width", LINE_HEIGHT);
                 }
             }
@@ -177,12 +177,12 @@ export const TimelineSlider: React.FC<TimelineSliderProps> = ({ currentDate, onC
         cursorGroup.append("line")
             .attr("y1", 20)
             .attr("y2", TOTAL_HEIGHT)
-            .attr("class", `stroke-blue-600 dark:stroke-blue-500 stroke-2 ${isLive ? 'opacity-100' : 'opacity-70'}`);
+            .attr("class", `stroke-amber-500 stroke-2 ${isLive ? 'opacity-100' : 'opacity-70'}`);
 
         // Top Handle
         cursorGroup.append("path")
             .attr("d", "M -6,20 L 6,20 L 6,30 L 0,36 L -6,30 Z")
-            .attr("class", "fill-blue-600 dark:fill-blue-500");
+            .attr("class", "fill-amber-500");
         
         // Time Label Bubble
         cursorGroup.append("rect")
@@ -203,23 +203,23 @@ export const TimelineSlider: React.FC<TimelineSliderProps> = ({ currentDate, onC
     }, [currentDate, onChange, members, TOTAL_HEIGHT, isLive]);
 
     return (
-        <div className="w-full bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-lg dark:shadow-none transition-all duration-300">
+        <div className="w-full bg-zinc-900 rounded-xl p-3 sm:p-4 border border-amber-900/40 shadow-lg transition-all duration-300">
             <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                    <Clock className="w-5 h-5 text-blue-600 dark:text-blue-500" />
-                    <span className="font-medium text-sm">Global Reference Time</span>
+                <div className="flex items-center gap-2 text-slate-300">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 shrink-0" />
+                    <span className="font-medium text-xs sm:text-sm">Global Reference Time</span>
                     {isLive && (
-                        <span className="flex items-center gap-1 text-[10px] font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full animate-pulse">
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-red-400 bg-red-950/30 px-2 py-0.5 rounded-full animate-pulse border border-red-900/40">
                             <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> LIVE
                         </span>
                     )}
                 </div>
                 <button 
                     onClick={onReset}
-                    className={`text-xs px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium
+                    className={`text-xs px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 font-medium
                         ${isLive 
-                            ? 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800' 
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                            ? 'bg-red-950/30 text-red-400 border border-red-900/40' 
+                            : 'bg-zinc-800 text-slate-400 hover:bg-zinc-700 border border-zinc-700'
                         }`}
                 >
                     {isLive ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
@@ -231,9 +231,9 @@ export const TimelineSlider: React.FC<TimelineSliderProps> = ({ currentDate, onC
                 <svg ref={svgRef} width="100%" height="100%" className="overflow-visible"></svg>
             </div>
             
-            <div className="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 mt-2 px-2 border-t border-slate-100 dark:border-slate-800 pt-2">
-                <div className="flex items-center gap-1"><Moon className="w-3 h-3"/> 00:00</div>
-                <div className="flex items-center gap-1">24:00 <Moon className="w-3 h-3"/></div>
+            <div className="flex justify-between text-[10px] text-slate-500 mt-2 px-2 border-t border-amber-900/20 pt-2">
+                <div className="flex items-center gap-1"><Moon className="w-3 h-3 text-slate-600"/> 00:00</div>
+                <div className="flex items-center gap-1">24:00 <Moon className="w-3 h-3 text-slate-600"/></div>
             </div>
         </div>
     );

@@ -44,14 +44,14 @@ export const TeamGlobe: React.FC<TeamGlobeProps> = ({ members }) => {
             // Water
             mapGroup.append("path")
                 .datum({ type: "Sphere" })
-                .attr("class", "fill-blue-50 dark:fill-slate-900 stroke-none")
+                .attr("class", "fill-zinc-950 stroke-none")
                 .attr("d", path as any);
 
             // Graticule
             const graticule = d3.geoGraticule();
             mapGroup.append("path")
                 .datum(graticule)
-                .attr("class", "fill-none stroke-blue-100 dark:stroke-slate-800 stroke-[0.5px]")
+                .attr("class", "fill-none stroke-amber-900/20 stroke-[0.5px]")
                 .attr("d", path as any);
 
             // Countries
@@ -90,11 +90,11 @@ export const TeamGlobe: React.FC<TeamGlobeProps> = ({ members }) => {
                 // Pulse effect
                 enter.append("circle")
                     .attr("r", 8)
-                    .attr("class", "fill-blue-500/30 animate-ping");
+                    .attr("class", "fill-amber-500/30 animate-ping");
 
                 enter.append("circle")
                     .attr("r", 4)
-                    .attr("class", "fill-blue-600 dark:fill-blue-400 stroke-white dark:stroke-slate-900 stroke-2");
+                    .attr("class", "fill-amber-500 stroke-black stroke-2");
 
                 // Tooltip Label
                 enter.append("text")
@@ -170,8 +170,8 @@ export const TeamGlobe: React.FC<TeamGlobeProps> = ({ members }) => {
     }, [members]);
 
     return (
-        <div ref={containerRef} className="w-full h-[450px] bg-slate-100 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden relative shadow-inner">
-             <div className="absolute top-4 left-4 z-10 bg-white/80 dark:bg-slate-900/80 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-slate-500 border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div ref={containerRef} className="w-full h-[350px] sm:h-[450px] bg-zinc-950 rounded-2xl border border-amber-900/30 overflow-hidden relative">
+             <div className="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-amber-600/70 border border-amber-900/40">
                 Interactive Team Map
             </div>
             <svg ref={svgRef} className="w-full h-full cursor-grab active:cursor-grabbing"></svg>
