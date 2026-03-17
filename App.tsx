@@ -265,7 +265,7 @@ const App: React.FC = () => {
 
   if (isLoading) {
       return (
-          <div className="min-h-screen bg-black dark:bg-black flex flex-col items-center justify-center text-slate-400 dark:text-slate-400">
+          <div className="min-h-screen bg-black flex flex-col items-center justify-center text-slate-400">
               <Loader2 className="w-10 h-10 animate-spin mb-4 text-amber-500" />
               <p>Loading your workspace...</p>
           </div>
@@ -273,7 +273,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black dark:bg-black text-slate-100 dark:text-slate-100 font-sans selection:bg-amber-500/30 transition-colors duration-300">
+    <div className="min-h-screen bg-black text-slate-100 font-sans selection:bg-amber-500/30 transition-colors duration-300">
       <CommandPalette 
           isOpen={isCommandPaletteOpen}
           onClose={() => setIsCommandPaletteOpen(false)}

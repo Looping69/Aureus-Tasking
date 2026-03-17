@@ -418,6 +418,7 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
                         </button>
                         <button 
                             onClick={handleSave}
+                            title="Save meeting"
                             className="flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-amber-600 text-black rounded-lg hover:bg-amber-500 text-xs sm:text-sm font-bold shadow-md shadow-amber-500/20"
                         >
                             <Save className="w-4 h-4" /> <span className="hidden sm:inline">Save</span>

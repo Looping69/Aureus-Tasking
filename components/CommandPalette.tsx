@@ -127,8 +127,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                     <div>
                         <span className="font-semibold text-amber-600/70">ProTip:</span> Use arrow keys to navigate
                     </div>
-                    <div className="text-amber-800">Aureus Tasking</div>
-                </div>
+                    <div className="text-amber-800">Aureus Tasking</div>                </div>
             </div>
         </div>
     );
