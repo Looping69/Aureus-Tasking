@@ -14,7 +14,7 @@ export const OnboardingTour: React.FC<OnboardingTourProps> = ({ isOpen, onComple
 
     const steps = [
         {
-            title: "Welcome to Zappy Meet",
+            title: "Welcome to Aureus Tasking",
             description: "Say goodbye to timezone math. Let's get your distributed team perfectly synchronized.",
             icon: <Globe className="w-12 h-12 text-amber-400" />,
             imageColor: "bg-amber-950/30"
