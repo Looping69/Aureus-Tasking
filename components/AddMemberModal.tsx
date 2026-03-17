@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { X, Loader2, Sparkles, UserPlus, Clock } from 'lucide-react';
 import { resolveLocationToTimezone } from '../services/geminiService';
+import { isAIAvailable } from '../services/geminiService';
 import { TeamMember } from '../types';
 
 interface AddMemberModalProps {
@@ -10,6 +11,30 @@ interface AddMemberModalProps {
     onAdd: (member: TeamMember) => void;
 }
 
+// Build timezone list from the browser's Intl API (sorted alphabetically)
+const TIMEZONES: string[] = (() => {
+    const intlWithExtras = Intl as typeof Intl & { supportedValuesOf?: (key: string) => string[] };
+    if (typeof intlWithExtras.supportedValuesOf === 'function') {
+        try {
+            return intlWithExtras.supportedValuesOf('timeZone').sort();
+        } catch {
+            // fall through to the static list below
+        }
+    }
+    // Fallback for environments that don't support supportedValuesOf
+    return [
+        'Africa/Cairo', 'Africa/Johannesburg', 'Africa/Lagos', 'America/Chicago',
+        'America/Denver', 'America/Los_Angeles', 'America/New_York', 'America/Sao_Paulo',
+        'America/Toronto', 'Asia/Calcutta', 'Asia/Dubai', 'Asia/Hong_Kong',
+        'Asia/Jakarta', 'Asia/Jerusalem', 'Asia/Karachi', 'Asia/Kolkata',
+        'Asia/Seoul', 'Asia/Shanghai', 'Asia/Singapore', 'Asia/Tokyo',
+        'Australia/Melbourne', 'Australia/Sydney', 'Europe/Amsterdam',
+        'Europe/Berlin', 'Europe/Istanbul', 'Europe/London', 'Europe/Madrid',
+        'Europe/Moscow', 'Europe/Paris', 'Europe/Rome', 'Pacific/Auckland',
+        'Pacific/Honolulu', 'UTC'
+    ];
+})();
+
 export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose, onAdd }) => {
     const [name, setName] = useState('');
     const [role, setRole] = useState('');
@@ -17,8 +42,15 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
     const [workStart, setWorkStart] = useState(9);
     const [workEnd, setWorkEnd] = useState(17);
     
+    // Manual timezone state (used when no AI key available)
+    const [manualTimezone, setManualTimezone] = useState(
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const aiAvailable = isAIAvailable();
 
     if (!isOpen) return null;
 
@@ -28,19 +60,33 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
         setError(null);
 
         try {
-            const locationData = await resolveLocationToTimezone(locationQuery);
-            
+            let location: string;
+            let timezone: string;
+            let lat: number | undefined;
+            let lng: number | undefined;
+
+            if (aiAvailable) {
+                const locationData = await resolveLocationToTimezone(locationQuery);
+                location = `${locationData.city}, ${locationData.country}`;
+                timezone = locationData.timezone;
+                lat = locationData.lat;
+                lng = locationData.lng;
+            } else {
+                location = locationQuery;
+                timezone = manualTimezone;
+            }
+
             const newMember: TeamMember = {
                 id: Date.now().toString(),
                 name,
                 role,
-                location: `${locationData.city}, ${locationData.country}`,
-                timezone: locationData.timezone,
+                location,
+                timezone,
                 avatarUrl: `https://picsum.photos/seed/${Date.now()}/200/200`,
                 workStartHour: Number(workStart),
                 workEndHour: Number(workEnd),
-                lat: locationData.lat,
-                lng: locationData.lng,
+                lat,
+                lng,
                 tasks: []
             };
 
@@ -52,6 +98,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
             setLocationQuery('');
             setWorkStart(9);
             setWorkEnd(17);
+            setManualTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
         } catch (err: any) {
             setError(err.message || "Failed to resolve location");
         } finally {
@@ -98,7 +145,9 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                     <div>
                         <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1 flex justify-between">
                             Location
-                            <span className="text-xs text-blue-500 dark:text-blue-400 flex items-center gap-1"><Sparkles className="w-3 h-3"/> AI Auto-detect</span>
+                            {aiAvailable && (
+                                <span className="text-xs text-blue-500 dark:text-blue-400 flex items-center gap-1"><Sparkles className="w-3 h-3"/> AI Auto-detect</span>
+                            )}
                         </label>
                         <input 
                             type="text" 
@@ -108,8 +157,26 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                             className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
                             placeholder="e.g. Berlin, Germany"
                         />
-                        <p className="text-xs text-slate-500 mt-1">We'll use Gemini to automatically find the timezone.</p>
+                        {aiAvailable && (
+                            <p className="text-xs text-slate-500 mt-1">AI will automatically detect the timezone.</p>
+                        )}
                     </div>
+
+                    {!aiAvailable && (
+                        <div>
+                            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Timezone</label>
+                            <select
+                                required
+                                value={manualTimezone}
+                                onChange={(e) => setManualTimezone(e.target.value)}
+                                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                            >
+                                {TIMEZONES.map(tz => (
+                                    <option key={tz} value={tz}>{tz}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -157,7 +224,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                             {isLoading ? (
                                 <>
                                     <Loader2 className="w-4 h-4 animate-spin" />
-                                    Detecting & Adding...
+                                    {aiAvailable ? 'Detecting & Adding...' : 'Adding...'}
                                 </>
                             ) : (
                                 'Add Member'

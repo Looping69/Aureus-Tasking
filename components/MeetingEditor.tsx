@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { TeamMember, Meeting, Task } from '../types';
-import { summarizeMeeting } from '../services/geminiService';
+import { summarizeMeeting, isAIAvailable } from '../services/geminiService';
 import { 
     Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, 
     Save, Wand2, CheckCircle2, Users, Calendar, Type, Quote, ChevronLeft, Sparkles, Loader2
@@ -394,15 +394,17 @@ export const MeetingEditor: React.FC<MeetingEditorProps> = ({ members, onSave, o
                              />
                         </div>
 
+                        {isAIAvailable() && (
                         <button 
                             onClick={handleAISummarize}
                             disabled={isSummarizing}
                             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50 transition-all"
-                            title="Summarize & Extract Tasks using Gemini AI"
+                            title="Summarize & Extract Tasks using AI"
                         >
                             {isSummarizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                             <span className="hidden sm:inline">AI Assist</span>
                         </button>
+                        )}
 
                         <button 
                             onClick={extractTasks}
