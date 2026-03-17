@@ -2,9 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { TimezoneResponse } from '../types';
 
+export const isAIAvailable = (): boolean => {
+    return Boolean(process.env.API_KEY);
+};
+
 const getClient = () => {
     const apiKey = process.env.API_KEY;
-    if (!apiKey) throw new Error("API Key not found");
+    if (!apiKey) throw new Error("No Gemini API key configured. Set GEMINI_API_KEY in .env.local to enable AI features.");
     return new GoogleGenAI({ apiKey });
 };
 
