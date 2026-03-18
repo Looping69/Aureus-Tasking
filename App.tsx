@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TeamMember, Meeting, Task, User } from './types';
 import { MemberCard } from './components/MemberCard';
 import { TimelineSlider } from './components/TimelineSlider';
@@ -12,7 +12,7 @@ import { MemberProfileModal } from './components/MemberProfileModal';
 import { Login } from './components/Login';
 import { TeamGlobe } from './components/TeamGlobe';
 import { CommandPalette } from './components/CommandPalette';
-import { Plus, Globe, Users, Sun, Moon, Filter, LayoutGrid, BarChart3, FileText, Settings, Sparkles, Layers, Search, Loader2, LogOut, UserCircle, Trash2, Zap } from 'lucide-react';
+import { Plus, Globe, Users, Sun, Moon, Filter, LayoutGrid, BarChart3, FileText, Settings, Sparkles, Layers, Search, Loader2, LogOut, UserCircle, Trash2, Zap, Wifi } from 'lucide-react';
 import { initDB, getMembers, getMeetings, addMember, updateMemberInDB, addTask, updateTaskInDB, deleteTaskFromDB, saveMeetingInDB, deleteMemberFromDB, deleteMeetingFromDB } from './services/db';
 
 type FilterType = 'all' | 'working' | 'off';
@@ -37,6 +37,10 @@ const App: React.FC = () => {
   // Loading State
   const [isLoading, setIsLoading] = useState(true);
   const [dbError, setDbError] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSynced, setLastSynced] = useState<Date | null>(null);
+  // Track members being actively updated locally to avoid overwriting with stale poll data
+  const pendingUpdateIds = useRef<Set<string>>(new Set());
   
   // Feature State
   const [groupByRole, setGroupByRole] = useState(false);
@@ -126,6 +130,29 @@ const App: React.FC = () => {
     initialize();
   }, [currentUser]);
 
+  // Live polling - sync member data every 15 seconds for real-time co-working
+  useEffect(() => {
+    if (!currentUser) return;
+    const poll = async () => {
+        setIsSyncing(true);
+        try {
+            const freshMembers = await getMembers();
+            setMembers(prev => freshMembers.map(fresh => {
+                // Keep the local (optimistic) version if an update for this member is still in-flight
+                const prevMember = prev.find(p => p.id === fresh.id);
+                return (prevMember && pendingUpdateIds.current.has(fresh.id)) ? prevMember : fresh;
+            }));
+            setLastSynced(new Date());
+        } catch (e) {
+            console.warn("Live sync failed", e);
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+    const interval = window.setInterval(poll, 15000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -163,6 +190,7 @@ const App: React.FC = () => {
   };
 
   const handleUpdateMember = async (id: string, updates: Partial<TeamMember>) => {
+    pendingUpdateIds.current.add(id);
     try {
         // Optimistic Update
         setMembers(prev => prev.map(m => {
@@ -199,6 +227,7 @@ const App: React.FC = () => {
              await updateMemberInDB(id, scalarUpdates);
         }
     } catch (e) { console.error("Failed to update member", e); }
+    finally { pendingUpdateIds.current.delete(id); }
   };
 
   const handleDeleteMember = async (id: string) => {
@@ -334,6 +363,12 @@ const App: React.FC = () => {
                 <span>{members.length}</span>
              </div>
 
+             {/* Live sync indicator */}
+             <div className={`hidden md:flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-mono ${isSyncing ? 'border-amber-700/60 text-amber-500 bg-amber-950/30' : 'border-emerald-800/40 text-emerald-500/80 bg-emerald-950/20'}`} title={lastSynced ? `Last synced: ${lastSynced.toLocaleTimeString()}` : 'Syncing...'}>
+                <Wifi className={`w-3 h-3 ${isSyncing ? 'animate-pulse' : ''}`} />
+                <span>{isSyncing ? 'Syncing' : 'Live'}</span>
+             </div>
+
              <button
                 onClick={() => setDarkMode(!darkMode)}
                 className="p-2 rounded-full hover:bg-amber-950/30 text-amber-500 transition-colors"
@@ -409,6 +444,7 @@ const App: React.FC = () => {
                     <div className="flex p-1 bg-zinc-900 rounded-lg border border-amber-900/40 shadow-sm">
                         <button onClick={() => setFilter('all')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'all' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>All</button>
                         <button onClick={() => setFilter('working')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-1 ${filter === 'working' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>Working</button>
+                        <button onClick={() => setFilter('off')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-1 ${filter === 'off' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>Off</button>
                     </div>
                 </div>
             )}
