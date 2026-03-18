@@ -61,6 +61,9 @@ export const initDB = async () => {
              await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS linkedin_handle TEXT`;
              await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS lat FLOAT`;
              await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS lng FLOAT`;
+             await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS is_tracking BOOLEAN DEFAULT FALSE`;
+             await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS tracking_start_time BIGINT`;
+             await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS time_logs JSONB DEFAULT '[]'::jsonb`;
         } catch (e) {
             // Ignore errors if columns exist
         }
@@ -197,6 +200,9 @@ export const getMembers = async (): Promise<TeamMember[]> => {
             linkedinHandle: row.linkedin_handle || '',
             lat: row.lat || 0,
             lng: row.lng || 0,
+            isTracking: row.is_tracking || false,
+            trackingStartTime: row.tracking_start_time ? Number(row.tracking_start_time) : undefined,
+            timeLogs: row.time_logs || [],
             tasks: memberTasks
         };
     });
@@ -227,10 +233,17 @@ export const updateMemberInDB = async (id: string, updates: Partial<TeamMember>)
     if (updates.lat !== undefined) await sql`UPDATE members SET lat = ${updates.lat} WHERE id = ${id}`;
     if (updates.lng !== undefined) await sql`UPDATE members SET lng = ${updates.lng} WHERE id = ${id}`;
 
-    if (updates.statusOverride !== undefined) {
-         const val = updates.statusOverride === undefined ? null : updates.statusOverride;
+    if ('statusOverride' in updates) {
+         const val = updates.statusOverride ?? null;
          await sql`UPDATE members SET status_override = ${val} WHERE id = ${id}`;
     }
+
+    if ('isTracking' in updates) await sql`UPDATE members SET is_tracking = ${updates.isTracking ?? false} WHERE id = ${id}`;
+    if ('trackingStartTime' in updates) {
+        const val = updates.trackingStartTime !== undefined ? updates.trackingStartTime : null;
+        await sql`UPDATE members SET tracking_start_time = ${val} WHERE id = ${id}`;
+    }
+    if ('timeLogs' in updates) await sql`UPDATE members SET time_logs = ${JSON.stringify(updates.timeLogs ?? [])}::jsonb WHERE id = ${id}`;
 };
 
 export const deleteMemberFromDB = async (id: string) => {

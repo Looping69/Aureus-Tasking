@@ -35,13 +35,26 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member, referenceTime, o
     const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set());
     const [now, setNow] = useState(Date.now());
 
-    // Update 'now' every minute to refresh tracking display
+    // Update 'now' every 30 seconds to refresh tracking display
     React.useEffect(() => {
         if (member.isTracking) {
-            const interval = setInterval(() => setNow(Date.now()), 60000);
+            const interval = setInterval(() => setNow(Date.now()), 30000);
             return () => clearInterval(interval);
         }
     }, [member.isTracking]);
+
+    // Calculate total time worked: sum of all completed logs + current session
+    const totalLoggedMinutes = (member.timeLogs || []).reduce((sum, log) => sum + (log.duration || 0), 0);
+    const currentSessionMinutes = member.isTracking && member.trackingStartTime
+        ? Math.floor((now - member.trackingStartTime) / 60000)
+        : 0;
+    const totalWorkedMinutes = totalLoggedMinutes + currentSessionMinutes;
+    const formatTotalTime = (minutes: number) => {
+        if (minutes < 60) return `${minutes}m`;
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    };
 
     // Calculate local time
     const utcTimestamp = referenceTime.getTime();
@@ -243,7 +256,12 @@ export const MemberCard: React.FC<MemberCardProps> = ({ member, referenceTime, o
                         </button>
                         {member.isTracking && member.trackingStartTime && (
                             <span className="text-xs font-mono text-amber-600">
-                                {Math.floor((now - member.trackingStartTime) / 60000)}m
+                                {currentSessionMinutes}m
+                            </span>
+                        )}
+                        {totalWorkedMinutes > 0 && (
+                            <span className="text-xs font-mono text-slate-500" title="Total time worked">
+                                <Clock className="w-3 h-3 inline mr-0.5 opacity-70" />{formatTotalTime(totalWorkedMinutes)}
                             </span>
                         )}
                     </div>
