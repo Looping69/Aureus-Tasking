@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { X, MapPin, Clock, Briefcase, Mail, Github, Linkedin, Edit2, Save, Plus, Tag, Trash2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { X, MapPin, Clock, Briefcase, Mail, Github, Linkedin, Edit2, Save, Plus, Tag, Trash2, Camera } from 'lucide-react';
 import { TeamMember } from '../types';
 import * as d3 from 'd3';
 
@@ -22,6 +22,9 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
     const [email, setEmail] = useState(member.email || '');
     const [github, setGithub] = useState(member.githubHandle || '');
     const [linkedin, setLinkedin] = useState(member.linkedinHandle || '');
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     if (!isOpen) return null;
 
@@ -33,9 +36,11 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
             skills,
             email,
             githubHandle: github,
-            linkedinHandle: linkedin
+            linkedinHandle: linkedin,
+            ...(avatarPreview ? { avatarUrl: avatarPreview } : {})
         });
         setIsEditing(false);
+        setAvatarPreview(null);
     };
     
     const handleDelete = () => {
@@ -49,6 +54,24 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
 
     const cancelDelete = () => {
         setShowConfirmDelete(false);
+    };
+
+    const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) return;
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image must be smaller than 5 MB.');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const result = ev.target?.result;
+            if (typeof result === 'string') {
+                setAvatarPreview(result);
+            }
+        };
+        reader.readAsDataURL(file);
     };
 
     const handleAddSkill = (e: React.FormEvent) => {
@@ -81,12 +104,34 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
                 </div>
 
                 <div className="px-4 sm:px-8 pb-4 sm:pb-8 flex-1 overflow-y-auto">
-                    <div className="relative flex flex-wrap justify-between items-end -mt-10 sm:-mt-12 mb-4 sm:mb-6 gap-2">
-                        <img 
-                            src={member.avatarUrl} 
-                            alt={member.name}
-                            className="w-20 h-20 sm:w-32 sm:h-32 rounded-full border-4 border-zinc-900 shadow-lg object-cover bg-zinc-800" 
-                        />
+                    <div className="relative z-10 flex flex-wrap justify-between items-end -mt-10 sm:-mt-12 mb-4 sm:mb-6 gap-2">
+                        {/* Avatar with optional upload overlay */}
+                        <div className="relative shrink-0">
+                            <img 
+                                src={avatarPreview || member.avatarUrl} 
+                                alt={member.name}
+                                className="w-20 h-20 sm:w-32 sm:h-32 rounded-full border-4 border-zinc-900 shadow-lg object-cover bg-zinc-800" 
+                            />
+                            {isEditing && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                                        title="Upload photo"
+                                    >
+                                        <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                                    </button>
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleAvatarUpload}
+                                    />
+                                </>
+                            )}
+                        </div>
                         {!isEditing ? (
                             <button 
                                 onClick={() => setIsEditing(true)}
@@ -97,7 +142,7 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
                         ) : (
                             <div className="flex gap-2 mb-2">
                                 <button 
-                                    onClick={() => setIsEditing(false)}
+                                    onClick={() => { setIsEditing(false); setAvatarPreview(null); }}
                                     className="px-3 sm:px-4 py-2 text-slate-500 hover:text-slate-300 text-sm"
                                 >
                                     Cancel
