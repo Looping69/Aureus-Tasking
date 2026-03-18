@@ -87,7 +87,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
                             )}
                         </div>
                         <h1 className="text-2xl font-bold text-white">
-                            {mode === 'register' ? 'Join Zappy Meet' : 
+                            {mode === 'register' ? 'Join Aureus Tasking' : 
                              mode === 'login' ? 'Welcome Back' : 
                              mode === 'forgot-email' ? 'Reset Password' : 'Verify Identity'}
                         </h1>
