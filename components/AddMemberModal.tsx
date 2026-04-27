@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import { X, Loader2, Sparkles, UserPlus, Clock } from 'lucide-react';
 import { resolveLocationToTimezone } from '../services/geminiService';
 import { isAIAvailable } from '../services/geminiService';
-import { TeamMember } from '../types';
+import { TeamMember, Department } from '../types';
 
 interface AddMemberModalProps {
     isOpen: boolean;
     onClose: () => void;
     onAdd: (member: TeamMember) => void;
+    departments?: Department[];
 }
 
 // Build timezone list from the browser's Intl API (sorted alphabetically)
@@ -35,12 +36,13 @@ const TIMEZONES: string[] = (() => {
     ];
 })();
 
-export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose, onAdd }) => {
+export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose, onAdd, departments = [] }) => {
     const [name, setName] = useState('');
     const [role, setRole] = useState('');
     const [locationQuery, setLocationQuery] = useState('');
     const [workStart, setWorkStart] = useState(9);
     const [workEnd, setWorkEnd] = useState(17);
+    const [departmentId, setDepartmentId] = useState('');
     
     // Manual timezone state (used when no AI key available)
     const [manualTimezone, setManualTimezone] = useState(
@@ -87,6 +89,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                 workEndHour: Number(workEnd),
                 lat,
                 lng,
+                departmentId: departmentId || undefined,
                 tasks: []
             };
 
@@ -98,6 +101,7 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
             setLocationQuery('');
             setWorkStart(9);
             setWorkEnd(17);
+            setDepartmentId('');
             setManualTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
         } catch (err: any) {
             setError(err.message || "Failed to resolve location");
@@ -173,6 +177,22 @@ export const AddMemberModal: React.FC<AddMemberModalProps> = ({ isOpen, onClose,
                             >
                                 {TIMEZONES.map(tz => (
                                     <option key={tz} value={tz}>{tz}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {departments.length > 0 && (
+                        <div>
+                            <label className="block text-sm font-medium text-slate-400 mb-1">Department</label>
+                            <select
+                                value={departmentId}
+                                onChange={(e) => setDepartmentId(e.target.value)}
+                                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-slate-200 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-colors"
+                            >
+                                <option value="">— No Department —</option>
+                                {departments.map(d => (
+                                    <option key={d.id} value={d.id}>{d.name}</option>
                                 ))}
                             </select>
                         </div>
