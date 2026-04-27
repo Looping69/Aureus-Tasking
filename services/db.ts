@@ -1,7 +1,7 @@
 
 import { neon } from '@neondatabase/serverless';
 import { CONFIG } from '../config';
-import { TeamMember, Task, Meeting, User } from '../types';
+import { TeamMember, Task, Meeting, User, Department } from '../types';
 import { INITIAL_MEMBERS } from '../constants';
 
 const sql = neon(CONFIG.NEON_DATABASE_URL);
@@ -90,6 +90,24 @@ export const initDB = async () => {
                 created_at TIMESTAMP DEFAULT NOW()
             )
         `;
+
+        // Departments Table
+        await sql`
+            CREATE TABLE IF NOT EXISTS departments (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                description TEXT,
+                color TEXT,
+                created_at TIMESTAMP DEFAULT NOW()
+            )
+        `;
+
+        // Schema Migration: add department_id to members
+        try {
+            await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS department_id TEXT REFERENCES departments(id) ON DELETE SET NULL`;
+        } catch (e) {
+            // Ignore if already exists
+        }
 
         // Check if empty, if so seed
         const membersCount = await sql`SELECT count(*) FROM members`;
@@ -203,6 +221,7 @@ export const getMembers = async (): Promise<TeamMember[]> => {
             isTracking: row.is_tracking || false,
             trackingStartTime: row.tracking_start_time ? Number(row.tracking_start_time) : undefined,
             timeLogs: row.time_logs || [],
+            departmentId: row.department_id || undefined,
             tasks: memberTasks
         };
     });
@@ -210,8 +229,8 @@ export const getMembers = async (): Promise<TeamMember[]> => {
 
 export const addMember = async (member: TeamMember) => {
     await sql`
-        INSERT INTO members (id, name, role, location, timezone, avatar_url, work_start_hour, work_end_hour, status_override, bio, skills, email, github_handle, linkedin_handle, lat, lng)
-        VALUES (${member.id}, ${member.name}, ${member.role}, ${member.location}, ${member.timezone}, ${member.avatarUrl}, ${member.workStartHour}, ${member.workEndHour}, ${member.statusOverride || null}, ${member.bio || null}, ${member.skills || null}, ${member.email || null}, ${member.githubHandle || null}, ${member.linkedinHandle || null}, ${member.lat || 0}, ${member.lng || 0})
+        INSERT INTO members (id, name, role, location, timezone, avatar_url, work_start_hour, work_end_hour, status_override, bio, skills, email, github_handle, linkedin_handle, lat, lng, department_id)
+        VALUES (${member.id}, ${member.name}, ${member.role}, ${member.location}, ${member.timezone}, ${member.avatarUrl}, ${member.workStartHour}, ${member.workEndHour}, ${member.statusOverride || null}, ${member.bio || null}, ${member.skills || null}, ${member.email || null}, ${member.githubHandle || null}, ${member.linkedinHandle || null}, ${member.lat || 0}, ${member.lng || 0}, ${member.departmentId || null})
     `;
 };
 
@@ -244,6 +263,10 @@ export const updateMemberInDB = async (id: string, updates: Partial<TeamMember>)
         await sql`UPDATE members SET tracking_start_time = ${val} WHERE id = ${id}`;
     }
     if ('timeLogs' in updates) await sql`UPDATE members SET time_logs = ${JSON.stringify(updates.timeLogs ?? [])}::jsonb WHERE id = ${id}`;
+    if ('departmentId' in updates) {
+        const val = updates.departmentId ?? null;
+        await sql`UPDATE members SET department_id = ${val} WHERE id = ${id}`;
+    }
 };
 
 export const deleteMemberFromDB = async (id: string) => {
@@ -299,5 +322,34 @@ export const saveMeetingInDB = async (meeting: Meeting) => {
 
 export const deleteMeetingFromDB = async (id: string) => {
     await sql`DELETE FROM meetings WHERE id = ${id}`;
+};
+
+// --- Departments ---
+
+export const getDepartments = async (): Promise<Department[]> => {
+    const rows = await sql`SELECT * FROM departments ORDER BY name ASC`;
+    return rows.map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        description: row.description || undefined,
+        color: row.color || undefined,
+    }));
+};
+
+export const addDepartment = async (department: Department) => {
+    await sql`
+        INSERT INTO departments (id, name, description, color)
+        VALUES (${department.id}, ${department.name}, ${department.description || null}, ${department.color || null})
+    `;
+};
+
+export const updateDepartmentInDB = async (id: string, updates: Partial<Department>) => {
+    if (updates.name !== undefined) await sql`UPDATE departments SET name = ${updates.name} WHERE id = ${id}`;
+    if (updates.description !== undefined) await sql`UPDATE departments SET description = ${updates.description} WHERE id = ${id}`;
+    if (updates.color !== undefined) await sql`UPDATE departments SET color = ${updates.color} WHERE id = ${id}`;
+};
+
+export const deleteDepartmentFromDB = async (id: string) => {
+    await sql`DELETE FROM departments WHERE id = ${id}`;
 };
     

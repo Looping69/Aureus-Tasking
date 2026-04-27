@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TeamMember, Meeting, Task, User } from './types';
+import { TeamMember, Meeting, Task, User, Department } from './types';
 import { MemberCard } from './components/MemberCard';
 import { TimelineSlider } from './components/TimelineSlider';
 import { AddMemberModal } from './components/AddMemberModal';
@@ -12,8 +12,9 @@ import { MemberProfileModal } from './components/MemberProfileModal';
 import { Login } from './components/Login';
 import { TeamGlobe } from './components/TeamGlobe';
 import { CommandPalette } from './components/CommandPalette';
-import { Plus, Globe, Users, Sun, Moon, Filter, LayoutGrid, BarChart3, FileText, Settings, Sparkles, Layers, Search, Loader2, LogOut, UserCircle, Trash2, Zap, Wifi } from 'lucide-react';
-import { initDB, getMembers, getMeetings, addMember, updateMemberInDB, addTask, updateTaskInDB, deleteTaskFromDB, saveMeetingInDB, deleteMemberFromDB, deleteMeetingFromDB } from './services/db';
+import { DepartmentsModal } from './components/DepartmentsModal';
+import { Plus, Globe, Users, Sun, Moon, Filter, LayoutGrid, BarChart3, FileText, Settings, Sparkles, Layers, Search, Loader2, LogOut, UserCircle, Trash2, Zap, Wifi, Building2 } from 'lucide-react';
+import { initDB, getMembers, getMeetings, addMember, updateMemberInDB, addTask, updateTaskInDB, deleteTaskFromDB, saveMeetingInDB, deleteMemberFromDB, deleteMeetingFromDB, getDepartments, addDepartment, updateDepartmentInDB, deleteDepartmentFromDB } from './services/db';
 
 type FilterType = 'all' | 'working' | 'off';
 type ViewMode = 'grid' | 'dashboard' | 'meetings';
@@ -44,9 +45,14 @@ const App: React.FC = () => {
   
   // Feature State
   const [groupByRole, setGroupByRole] = useState(false);
+  const [groupByDepartment, setGroupByDepartment] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isOverlapOpen, setIsOverlapOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isDepartmentsOpen, setIsDepartmentsOpen] = useState(false);
+
+  // Departments State
+  const [departments, setDepartments] = useState<Department[]>([]);
 
   // Profile State
   const [selectedMemberProfile, setSelectedMemberProfile] = useState<TeamMember | null>(null);
@@ -114,12 +120,14 @@ const App: React.FC = () => {
         setIsLoading(true);
         try {
             await initDB();
-            const [loadedMembers, loadedMeetings] = await Promise.all([
+            const [loadedMembers, loadedMeetings, loadedDepartments] = await Promise.all([
                 getMembers(),
-                getMeetings()
+                getMeetings(),
+                getDepartments()
             ]);
             setMembers(loadedMembers);
             setMeetings(loadedMeetings);
+            setDepartments(loadedDepartments);
         } catch (e) {
             console.error("Failed to load data", e);
             setDbError("Failed to connect to Neon database. Please check configuration.");
@@ -241,6 +249,29 @@ const App: React.FC = () => {
     }
   };
 
+  const handleAddDepartment = async (dept: Department) => {
+    try {
+        setDepartments(prev => [...prev, dept]);
+        await addDepartment(dept);
+    } catch (e) { console.error("Failed to add department", e); }
+  };
+
+  const handleUpdateDepartment = async (id: string, updates: Partial<Department>) => {
+    try {
+        setDepartments(prev => prev.map(d => d.id === id ? { ...d, ...updates } : d));
+        await updateDepartmentInDB(id, updates);
+    } catch (e) { console.error("Failed to update department", e); }
+  };
+
+  const handleDeleteDepartment = async (id: string) => {
+    try {
+        await deleteDepartmentFromDB(id);
+        setDepartments(prev => prev.filter(d => d.id !== id));
+        // Clear departmentId from members that referenced this department
+        setMembers(prev => prev.map(m => m.departmentId === id ? { ...m, departmentId: undefined } : m));
+    } catch (e) { console.error("Failed to delete department", e); }
+  };
+
   const handleDeleteMeeting = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     // Replaced confirm() with a direct action as confirm() is blocked in iframes
@@ -280,6 +311,14 @@ const App: React.FC = () => {
       acc[key].push(member);
       return acc;
   }, {} as Record<string, TeamMember[]>);
+
+  const groupedByDepartment = filteredMembers.reduce((acc, member) => {
+      const dept = departments.find(d => d.id === member.departmentId);
+      const key = dept ? dept.name : 'No Department';
+      if (!acc[key]) acc[key] = { color: dept?.color, members: [] };
+      acc[key].members.push(member);
+      return acc;
+  }, {} as Record<string, { color?: string; members: TeamMember[] }>);
 
   const filteredMeetings = meetings.filter(m => 
     m.title.toLowerCase().includes(meetingSearchQuery.toLowerCase()) ||
@@ -322,6 +361,15 @@ const App: React.FC = () => {
         members={members}
         meetings={meetings}
         onImport={() => alert("Import disabled in live version")}
+      />
+
+      <DepartmentsModal
+        isOpen={isDepartmentsOpen}
+        onClose={() => setIsDepartmentsOpen(false)}
+        departments={departments}
+        onAdd={handleAddDepartment}
+        onUpdate={handleUpdateDepartment}
+        onDelete={handleDeleteDepartment}
       />
       
       <OverlapFinderModal
@@ -374,6 +422,15 @@ const App: React.FC = () => {
                 className="p-2 rounded-full hover:bg-amber-950/30 text-amber-500 transition-colors"
              >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+             </button>
+
+             <button
+                onClick={() => setIsDepartmentsOpen(true)}
+                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-900/40 bg-amber-950/20 hover:bg-amber-950/40 text-amber-500 text-xs font-semibold transition-colors"
+                title="Manage Departments"
+             >
+                <Building2 className="w-4 h-4" />
+                <span>Departments</span>
              </button>
              
              <div className="h-6 w-px bg-amber-900/40 mx-1"></div>
@@ -438,8 +495,21 @@ const App: React.FC = () => {
                     <button id="add-member-trigger" onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 bg-amber-600 hover:bg-amber-500 text-black px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg shadow-amber-500/20 transition-colors">
                         <Plus className="w-4 h-4" /> Add Member
                     </button>
-                     <button onClick={() => setGroupByRole(!groupByRole)} className={`p-2 rounded-lg border transition-colors ${groupByRole ? 'bg-amber-900/30 border-amber-700 text-amber-500' : 'bg-zinc-900 border-amber-900/40 text-slate-500 hover:text-amber-400'}`}>
+                     <button
+                         onClick={() => { setGroupByRole(!groupByRole); setGroupByDepartment(false); }}
+                         className={`p-2 rounded-lg border transition-colors`}
+                         style={groupByRole ? { background: 'rgba(120,53,15,0.3)', borderColor: 'rgb(180,83,9)', color: 'rgb(245,158,11)' } : { background: 'rgb(24,24,27)', borderColor: 'rgba(120,53,15,0.4)', color: 'rgb(100,116,139)' }}
+                         title="Group by Role"
+                     >
                          <Layers className="w-4 h-4" />
+                     </button>
+                     <button
+                         onClick={() => { setGroupByDepartment(!groupByDepartment); setGroupByRole(false); }}
+                         className={`p-2 rounded-lg border transition-colors`}
+                         style={groupByDepartment ? { background: 'rgba(120,53,15,0.3)', borderColor: 'rgb(180,83,9)', color: 'rgb(245,158,11)' } : { background: 'rgb(24,24,27)', borderColor: 'rgba(120,53,15,0.4)', color: 'rgb(100,116,139)' }}
+                         title="Group by Department"
+                     >
+                         <Building2 className="w-4 h-4" />
                      </button>
                     <div className="flex p-1 bg-zinc-900 rounded-lg border border-amber-900/40 shadow-sm">
                         <button onClick={() => setFilter('all')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'all' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>All</button>
@@ -538,8 +608,29 @@ const App: React.FC = () => {
                 </div>
             )
         ) : (
-            <div className={groupByRole ? "space-y-8" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"}>
-                {groupByRole ? Object.entries(groupedMembers).map(([role, groupMembers]) => (
+            <div className={(groupByRole || groupByDepartment) ? "space-y-8" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start"}>
+                {groupByDepartment ? Object.entries(groupedByDepartment).map(([deptName, { color, members: groupMembers }]) => (
+                    <div key={deptName} className="animate-in fade-in">
+                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2 pl-1" style={{ color: color || '#f59e0b' }}>
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color || '#f59e0b' }}></span>
+                            <Building2 className="w-4 h-4" />
+                            {deptName}
+                            <span className="text-xs font-normal text-slate-500 ml-1">({groupMembers.length})</span>
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+                            {groupMembers.map((member) => (
+                                <MemberCard
+                                    key={member.id}
+                                    member={member}
+                                    referenceTime={referenceTime}
+                                    onUpdate={(updates) => handleUpdateMember(member.id, updates)}
+                                    onViewProfile={() => setSelectedMemberProfile(member)}
+                                    onDelete={() => handleDeleteMember(member.id)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )) : groupByRole ? Object.entries(groupedMembers).map(([role, groupMembers]) => (
                     <div key={role} className="animate-in fade-in">
                         <h3 className="text-lg font-bold text-amber-400 mb-4 flex items-center gap-2 pl-1">
                             <span className="w-2 h-2 rounded-full bg-amber-500"></span> {role}
@@ -571,7 +662,7 @@ const App: React.FC = () => {
         )}
       </main>
       
-      <AddMemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={handleAddMember} />
+      <AddMemberModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={handleAddMember} departments={departments} />
     </div>
   );
 };

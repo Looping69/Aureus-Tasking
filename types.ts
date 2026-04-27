@@ -10,6 +10,13 @@ export interface Task {
   timeSpent?: number; // In minutes
 }
 
+export interface Department {
+  id: string;
+  name: string;
+  description?: string;
+  color?: string;
+}
+
 export interface TeamMember {
   id: string;
   name: string;
@@ -21,6 +28,7 @@ export interface TeamMember {
   workEndHour: number; // 0-23
   statusOverride?: 'online' | 'offline';
   tasks: Task[];
+  departmentId?: string;
   // Rich Profile
   bio?: string;
   skills?: string[];
