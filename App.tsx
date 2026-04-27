@@ -46,6 +46,7 @@ const App: React.FC = () => {
   // Feature State
   const [groupByRole, setGroupByRole] = useState(false);
   const [groupByDepartment, setGroupByDepartment] = useState(false);
+  const [departmentFilter, setDepartmentFilter] = useState<string>(''); // '' = all departments
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isOverlapOpen, setIsOverlapOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -300,9 +301,13 @@ const App: React.FC = () => {
   };
 
   const filteredMembers = members.filter(member => {
-    if (filter === 'all') return true;
-    const working = isMemberWorking(member, referenceTime);
-    return filter === 'working' ? working : !working;
+    if (filter !== 'all') {
+      const working = isMemberWorking(member, referenceTime);
+      if (filter === 'working' && !working) return false;
+      if (filter === 'off' && working) return false;
+    }
+    if (departmentFilter && member.departmentId !== departmentFilter) return false;
+    return true;
   });
   
   const groupedMembers = filteredMembers.reduce((acc, member) => {
@@ -386,6 +391,7 @@ const App: React.FC = () => {
             member={selectedMemberProfile}
             onUpdate={handleUpdateMember}
             onDelete={handleDeleteMember}
+            departments={departments}
           />
       )}
 
@@ -491,7 +497,7 @@ const App: React.FC = () => {
             </div>
             
             {viewMode === 'grid' && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                     <button id="add-member-trigger" onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 bg-amber-600 hover:bg-amber-500 text-black px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg shadow-amber-500/20 transition-colors">
                         <Plus className="w-4 h-4" /> Add Member
                     </button>
@@ -509,6 +515,19 @@ const App: React.FC = () => {
                      >
                          <Building2 className="w-4 h-4" />
                      </button>
+                    {departments.length > 0 && (
+                        <select
+                            value={departmentFilter}
+                            onChange={e => setDepartmentFilter(e.target.value)}
+                            className="bg-zinc-900 border border-amber-900/40 rounded-lg px-3 py-1.5 text-sm text-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-colors"
+                            title="Filter by Department"
+                        >
+                            <option value="">All Departments</option>
+                            {departments.map(d => (
+                                <option key={d.id} value={d.id}>{d.name}</option>
+                            ))}
+                        </select>
+                    )}
                     <div className="flex p-1 bg-zinc-900 rounded-lg border border-amber-900/40 shadow-sm">
                         <button onClick={() => setFilter('all')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${filter === 'all' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>All</button>
                         <button onClick={() => setFilter('working')} className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all flex items-center gap-1 ${filter === 'working' ? 'bg-amber-600 text-black shadow-sm' : 'text-slate-400 hover:text-amber-400'}`}>Working</button>
