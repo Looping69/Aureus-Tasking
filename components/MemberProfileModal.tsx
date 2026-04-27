@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
-import { X, MapPin, Clock, Briefcase, Mail, Github, Linkedin, Edit2, Save, Plus, Tag, Trash2, Camera } from 'lucide-react';
-import { TeamMember } from '../types';
+import { X, MapPin, Clock, Briefcase, Mail, Github, Linkedin, Edit2, Save, Plus, Tag, Trash2, Camera, Building2 } from 'lucide-react';
+import { TeamMember, Department } from '../types';
 import * as d3 from 'd3';
 
 interface MemberProfileModalProps {
@@ -10,9 +10,10 @@ interface MemberProfileModalProps {
     member: TeamMember;
     onUpdate: (id: string, updates: Partial<TeamMember>) => void;
     onDelete: (id: string) => void;
+    departments?: Department[];
 }
 
-export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, onClose, member, onUpdate, onDelete }) => {
+export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, onClose, member, onUpdate, onDelete, departments = [] }) => {
     const [isEditing, setIsEditing] = useState(false);
     
     // Edit State
@@ -22,6 +23,7 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
     const [email, setEmail] = useState(member.email || '');
     const [github, setGithub] = useState(member.githubHandle || '');
     const [linkedin, setLinkedin] = useState(member.linkedinHandle || '');
+    const [departmentId, setDepartmentId] = useState(member.departmentId || '');
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -37,6 +39,7 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
             email,
             githubHandle: github,
             linkedinHandle: linkedin,
+            departmentId: departmentId || undefined,
             ...(avatarPreview ? { avatarUrl: avatarPreview } : {})
         });
         setIsEditing(false);
@@ -91,6 +94,8 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
     try {
         localTime = new Date().toLocaleString("en-US", { timeZone: member.timezone, hour: 'numeric', minute: '2-digit' });
     } catch (e) { localTime = "Unknown"; }
+
+    const assignedDept = departments.find(d => d.id === member.departmentId);
 
     return (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md">
@@ -187,6 +192,32 @@ export const MemberProfileModal: React.FC<MemberProfileModalProps> = ({ isOpen, 
                                     </div>
                                 </div>
                             </div>
+
+                            {(departments.length > 0 || member.departmentId) && (
+                                <div className="space-y-2 pt-3 sm:pt-4 border-t border-amber-900/20">
+                                    <h3 className="text-xs font-bold uppercase text-slate-500 tracking-wider">Department</h3>
+                                    {isEditing ? (
+                                        <select
+                                            value={departmentId}
+                                            onChange={e => setDepartmentId(e.target.value)}
+                                            className="w-full text-sm p-2 rounded bg-zinc-800 border border-zinc-700 text-slate-300 outline-none focus:ring-1 focus:ring-amber-500"
+                                        >
+                                            <option value="">— No Department —</option>
+                                            {departments.map(d => (
+                                                <option key={d.id} value={d.id}>{d.name}</option>
+                                            ))}
+                                        </select>
+                                    ) : assignedDept ? (
+                                            <div className="flex items-center gap-2 text-sm text-slate-300">
+                                                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: assignedDept.color || '#f59e0b' }} />
+                                                <Building2 className="w-3.5 h-3.5 text-amber-600/60 shrink-0" />
+                                                {assignedDept.name}
+                                            </div>
+                                        ) : (
+                                            <p className="text-sm text-slate-500 italic">No department assigned.</p>
+                                        )}
+                                </div>
+                            )}
 
                             <div className="space-y-3 pt-3 sm:pt-4 border-t border-amber-900/20">
                                 <h3 className="text-xs font-bold uppercase text-slate-500 tracking-wider">Connect</h3>
