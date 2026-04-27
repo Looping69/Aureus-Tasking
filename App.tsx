@@ -497,16 +497,14 @@ const App: React.FC = () => {
                     </button>
                      <button
                          onClick={() => { setGroupByRole(!groupByRole); setGroupByDepartment(false); }}
-                         className={`p-2 rounded-lg border transition-colors`}
-                         style={groupByRole ? { background: 'rgba(120,53,15,0.3)', borderColor: 'rgb(180,83,9)', color: 'rgb(245,158,11)' } : { background: 'rgb(24,24,27)', borderColor: 'rgba(120,53,15,0.4)', color: 'rgb(100,116,139)' }}
+                         className={`p-2 rounded-lg border transition-colors ${groupByRole ? 'bg-amber-900/30 border-amber-700 text-amber-500' : 'bg-zinc-900 border-amber-900/40 text-slate-500 hover:text-amber-400'}`}
                          title="Group by Role"
                      >
                          <Layers className="w-4 h-4" />
                      </button>
                      <button
                          onClick={() => { setGroupByDepartment(!groupByDepartment); setGroupByRole(false); }}
-                         className={`p-2 rounded-lg border transition-colors`}
-                         style={groupByDepartment ? { background: 'rgba(120,53,15,0.3)', borderColor: 'rgb(180,83,9)', color: 'rgb(245,158,11)' } : { background: 'rgb(24,24,27)', borderColor: 'rgba(120,53,15,0.4)', color: 'rgb(100,116,139)' }}
+                         className={`p-2 rounded-lg border transition-colors ${groupByDepartment ? 'bg-amber-900/30 border-amber-700 text-amber-500' : 'bg-zinc-900 border-amber-900/40 text-slate-500 hover:text-amber-400'}`}
                          title="Group by Department"
                      >
                          <Building2 className="w-4 h-4" />

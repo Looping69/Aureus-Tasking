@@ -26,7 +26,7 @@ export const initDB = async () => {
              await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS security_question TEXT`;
              await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS security_answer TEXT`;
         } catch (e) {
-            // Ignore if columns exist
+            console.warn("Schema migration (users columns):", e);
         }
 
         // Members Table
@@ -65,7 +65,7 @@ export const initDB = async () => {
              await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS tracking_start_time BIGINT`;
              await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS time_logs JSONB DEFAULT '[]'::jsonb`;
         } catch (e) {
-            // Ignore errors if columns exist
+            console.warn("Schema migration (members columns):", e);
         }
 
         // Tasks Table
@@ -106,7 +106,7 @@ export const initDB = async () => {
         try {
             await sql`ALTER TABLE members ADD COLUMN IF NOT EXISTS department_id TEXT REFERENCES departments(id) ON DELETE SET NULL`;
         } catch (e) {
-            // Ignore if already exists
+            console.warn("Schema migration (department_id):", e);
         }
 
         // Check if empty, if so seed

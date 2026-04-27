@@ -39,7 +39,7 @@ export const DepartmentsModal: React.FC<DepartmentsModalProps> = ({
         e.preventDefault();
         if (!newName.trim()) return;
         onAdd({
-            id: Date.now().toString(),
+            id: crypto.randomUUID(),
             name: newName.trim(),
             description: newDescription.trim() || undefined,
             color: newColor,
